@@ -23,7 +23,7 @@ for K = [13, 40]
     end
     figure();
     spy(S1);
-    title('Sparsity pattern of S')
+    title('Sparsity pattern of S');
     S2 = S1;
     % Generating similarity graph with k-nearest neighbourhood graph
     for i = 1:n
@@ -66,6 +66,7 @@ for K = [13, 40]
     row_indices = row_indices(1:nz);
     values = values(1:nz);
     W = sparse(row_indices, column_indices, values, n, n);
+    
     figure();
     spy(W);
     title({'Sparsity pattern of W', ['K=', num2str(K)]});
@@ -77,7 +78,7 @@ for K = [13, 40]
     % Computing the normalized symmetric Laplacian
     degrees = full(sum(W, 2));
     D = spdiags(degrees, 0, n, n);
-    
+
     M = 5;
     
     D_tmp = sqrt(inv(D));
@@ -103,7 +104,7 @@ for K = [13, 40]
     fprintf('Error in the computation of eigenvalues: %e\n', rel_err_eigs);
     
     figure();
-    bar(1:M, iter);
+    vbar = bar(1:M, iter);
     title({'Number of iterations in power method', ['K=', num2str(K)]});
     xlabel('Eigenvalue');
     ylabel('Number of iterations performed');
@@ -119,14 +120,14 @@ for K = [13, 40]
     end
     
     U = U(:, 1:EIGENGAP);
-    
+
     % normalizing eigenvectors
     for j=1:EIGENGAP
         U(:,j) = U(:,j) ./ norm(U(:,j));
     end
     
-    % Computating matrix U containing first m eigenvectors and normalizing its
-    % rows
+    % Computating matrix U containing first m eigenvectors 
+    % and normalizing its rows
     for i=1:n
         U(i,:) = U(i,:) ./ norm(U(i,:));
     end
@@ -149,18 +150,23 @@ for K = [13, 40]
         title({'Kmeans result on spectral clustering [MATLAB]', ...
             ['N\_CLUSTERS=', num2str(N_CLUSTERS)]});
         
-        % comparing eigenvalues computed by the function spectralcluster to our
+        % comparing eigenvalues computed by the function 
+        % spectralcluster to those of our function
         figure();
-        scatter(1:M, lambda_orig, 100, 'filled', 'd', 'MarkerEdgeColor', 'black', 'MarkerFaceColor', 'black');
+        scatter(1:M, lambda_orig, 200, 'd', 'MarkerEdgeColor', 'black', ...
+            'LineWidth', 2);
         hold on;
-        scatter(1:length(D), D, 100, 'o', 'MarkerEdgeColor', 'red', 'LineWidth', 2.5);
-        scatter(1:M, lambda, 100, 'x', 'MarkerEdgeColor', 'blue', 'LineWidth', 2.5);
+        scatter(1:length(D), D, 100, 'o', 'MarkerEdgeColor', 'red', ...
+            'LineWidth', 2.5);
+        scatter(1:M, lambda, 50, 'x', 'MarkerEdgeColor', 'blue', ...
+            'LineWidth', 2);
         hold off;
         title({'Minimum eigenvalues of L\_sym', [' K=', num2str(K)], ...
             [' N\_CLUSTERS=', num2str(N_CLUSTERS)]});
-        legend('Computed with spectralcluster function', ...
+        legend('Computed with eigs function', ...
+            'Computed with spectralcluster function', ...
             'Computed with power method with deflation', ...
-            'Computed with eigs function', 'Location', 'northwest');
+             'Location', 'northwest');
         
         % Applying K-means on original points
         rng(42); % setting random state for kmeans reproducibility

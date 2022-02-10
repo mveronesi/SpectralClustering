@@ -24,7 +24,7 @@ if n ~= m
 end
 if nargin == 2
     tol = 1e-16;
-    nmax = 100000;
+    nmax = 1e5;
     x0 = ones(n, 1);
 end
 x0 = x0 / norm(x0);
