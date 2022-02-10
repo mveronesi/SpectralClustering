@@ -104,7 +104,7 @@ for K = [13, 40]
     fprintf('Error in the computation of eigenvalues: %e\n', rel_err_eigs);
     
     figure();
-    vbar = bar(1:M, iter);
+    bar(1:M, iter);
     title({'Number of iterations in power method', ['K=', num2str(K)]});
     xlabel('Eigenvalue');
     ylabel('Number of iterations performed');
