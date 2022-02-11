@@ -4,6 +4,9 @@ format long;
 load('X.mat');
 sigma = 1; tol = 1e-8;
 similarity = @(x, y) exp(-norm(x-y, 2).^2 ./ sigma.^2);
+% parameters for clustering results plots
+symbols = ['.', '+', 'o'];
+colors = ['k', 'r', 'b'];
 
 for K = [13, 40]
     disp(['############ K = ', num2str(K), ' #############']);
@@ -134,10 +137,11 @@ for K = [13, 40]
     
     % Applying K-means for spectral clustering
     for N_CLUSTERS = [2, 3]
+        
         rng(42); % setting random state for kmeans reproducibility
         idx = kmeans(U, N_CLUSTERS);
         figure();
-        gscatter(X(:,1), X(:,2), idx);
+        gscatter(X(:,1), X(:,2), idx, colors, symbols);
         title({'Kmeans result on spectral clustering', ...
             ['K=', num2str(K)], ['N\_CLUSTERS=', num2str(N_CLUSTERS)], ...
             'Eigenvectors computed with power method and deflation'});
@@ -146,10 +150,18 @@ for K = [13, 40]
         rng(42); % setting random state for kmeans reproducibility
         [idx, V, D] = spectralcluster(X, N_CLUSTERS);
         figure();
-        gscatter(X(:,1), X(:,2), idx);
+        gscatter(X(:,1), X(:,2), idx, colors, symbols);
         title({'Kmeans result on spectral clustering [MATLAB]', ...
             ['N\_CLUSTERS=', num2str(N_CLUSTERS)]});
         
+        % Applying K-means on original points
+        rng(42); % setting random state for kmeans reproducibility
+        idx = kmeans(X, N_CLUSTERS);
+        figure();
+        gscatter(X(:,1), X(:,2), idx, colors, symbols);
+        title({'Kmeans result on original points', ...
+            ['N\_CLUSTERS=', num2str(N_CLUSTERS)]});
+
         % comparing eigenvalues computed by the function 
         % spectralcluster to those of our function
         figure();
@@ -166,14 +178,6 @@ for K = [13, 40]
         legend('Computed with eigs function', ...
             'Computed with spectralcluster function', ...
             'Computed with power method with deflation', ...
-             'Location', 'northwest');
-        
-        % Applying K-means on original points
-        rng(42); % setting random state for kmeans reproducibility
-        idx = kmeans(X, N_CLUSTERS);
-        figure();
-        gscatter(X(:,1), X(:,2), idx);
-        title({'Kmeans result on original points', ...
-            ['N\_CLUSTERS=', num2str(N_CLUSTERS)]});
+             'Location', 'northwest');     
     end
 end

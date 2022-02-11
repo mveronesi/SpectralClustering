@@ -1,0 +1,6 @@
+The code is splitted in three files:
+- main.m (script)
+- power_deflation_rec.m (function)
+- power_method.m (function)
+All the files must be in the same directory with the provided dataset X.mat,
+to obtain our results and figures just run the main.m script.
